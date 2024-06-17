@@ -9,4 +9,7 @@ export default class Medicamento extends ArticuloBase {
   aumentarCantidad(cant){
     this.cantidad += cant
   }
+  decrementarCantidad(cant){
+    this.cantidad -= cant
+  }
 }

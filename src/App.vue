@@ -18,16 +18,6 @@ const { handleSubmit, handleReset } = useForm({
       if (value?.length >= 2) return true
 
       return 'La categoria debe tener al menos 2 caracteres.'
-    },
-    cantidad (value) {
-      if (value !== undefined) return true
-
-      return 'Debe insertar una cantidad.'
-    },
-    precio (value) {
-      if(value > 10) return true
-
-      return 'Debe insertar una cantidad.'
     }
   },
 })
@@ -38,90 +28,178 @@ const precio = useField('precio')
 const listaNombres = ref([])
 const existencias = useField('existencias')
 const nombreActualizar = ref('')
+const medicamentosPorCategoria = ref([])
+const buscarMedCategoria = ref('buscarMedCategoria')
+const listaCategorias = ref([])
+buscarMedCategoria.value =null
 
 const submit = handleSubmit(values => {
+  /*if(medicamentos.has(values.nombre)){
+    alert('Ya existe ese medicamento')
+  }else{
+    medicamentos.set(values.nombre, new Medicamento(values.nombre, values.categoria, values.cantidad, values.precio))
+    console.log('agregado el medicamento')
+    console.log(medicamentos)
+  }*/
   medicamentos.has(values.nombre) ? alert('Ya existe ese medicamento') : medicamentos.set(values.nombre, new Medicamento(values.nombre, values.categoria, values.cantidad, values.precio))
-  console.log(medicamentos)
   listaNombres.value.push(values.nombre.toString())
-  console.log(listaNombres)
+  if(!buscarCategoria(values.categoria)) listaCategorias.value.push(values.categoria)
+  console.log(medicamentos)
+  console.log(listaNombres.value)
+  console.log(listaCategorias.value)
 })
 
-const agregarExistencias = () =>{
-  medicamentos.has()
+function buscarCategoria(cat) {
+  for (let c of listaCategorias.value) {
+    if(c === cat) return true
+  }
+  return false;
 }
+
+const aumentarExistencias = () =>{
+  if(!medicamentos.has(nombreActualizar.value)){
+    alert('No existe ese medicamento')
+  }else {
+    medicamentos.get(nombreActualizar.value).aumentarCantidad(existencias.value.value)
+    existencias.value.value = 0
+    nombreActualizar.value = ' '
+  }
+}
+const decrementarExistencias = () =>{
+  if(!medicamentos.has(nombreActualizar.value)){
+    alert('No existe ese medicamento')
+  }else {
+    medicamentos.get(nombreActualizar.value).decrementarCantidad(existencias.value.value)
+    existencias.value.value = 0
+    nombreActualizar.value = ' '
+  }
+}
+
+const buscarPorCategoria = () =>{
+  medicamentosPorCategoria.value.splice(0, medicamentosPorCategoria.value.length)
+  let found = false
+  let arr = [...medicamentos.values()]
+  console.log(buscarMedCategoria.value)
+  console.log(arr)
+  for (let m of arr) {
+    if(m.categoria === buscarMedCategoria.value){
+      medicamentosPorCategoria.value.push(m)
+      found = true
+    }
+  }
+  if(!found)
+    alert('No existen medicamentos en dicha categoria')
+}
+
 </script>
 
 <template>
   <h1 class="mt-10 text-center text-h2 mb-14">Gestión de Inventarios de Farmacia</h1>
-  <form @submit.prevent="submit" class="ml-lg-10 w-lg-25">
-    <h2 class="text-center mb-2">Crear medicamento</h2>
-    <v-text-field
-      v-model="nombre.value.value"
-      :counter="80"
-      :error-messages="nombre.errorMessage.value"
-      label="Nombre"
-    ></v-text-field>
+  <v-row>
+    <v-col class="ml-16">
+      <form @submit.prevent="submit" class="w-md-50">
+        <h2 class="text-center mb-2">Crear medicamento</h2>
+        <v-text-field
+          v-model="nombre.value.value"
+          :counter="80"
+          :error-messages="nombre.errorMessage.value"
+          label="Nombre"
+        ></v-text-field>
 
-    <v-text-field
-      v-model="categoria.value.value"
-      :counter="50"
-      :error-messages="categoria.errorMessage.value"
-      label="Categoria"
-    ></v-text-field>
+        <v-text-field
+          v-model="categoria.value.value"
+          :counter="50"
+          :error-messages="categoria.errorMessage.value"
+          label="Categoria"
+        ></v-text-field>
 
-    <v-number-input
-      class="w-50"
-      control-variant="stacked"
-      label="Cantidad"
-      :max="1000000"
-      :min="10"
-      v-model="cantidad.value.value"
-    ></v-number-input>
+        <v-number-input
+          class="w-50"
+          control-variant="stacked"
+          label="Cantidad"
+          :max="1000000"
+          :min="1"
+          v-model="cantidad.value.value"
+        ></v-number-input>
 
-    <v-number-input
-      class="w-50"
-      control-variant="stacked"
-      label="Precio"
-      :max="1000000"
-      :min="1"
-      v-model="precio.value.value"
-    ></v-number-input>
+        <v-number-input
+          class="w-50"
+          control-variant="stacked"
+          label="Precio"
+          :max="1000000"
+          :min="1"
+          v-model="precio.value.value"
+        ></v-number-input>
 
-    <v-btn
-      class="me-4 bg-blue font-weight-bold"
-      type="submit"
-    >
-      Crear
-    </v-btn>
+        <v-btn
+          class="me-4 bg-blue font-weight-bold"
+          type="submit"
+        >
+          Crear
+        </v-btn>
 
-    <v-btn @click="handleReset">
-      Limpiar campos
-    </v-btn>
-  </form>
+        <v-btn @click="handleReset">
+          Limpiar campos
+        </v-btn>
+      </form>
 
-  <div class="ml-lg-10 mt-lg-16 w-lg-25">
-    <h2 class="text-center mb-2">Actualizar existencias</h2>
-    <v-autocomplete
-      class=""
-      label="Nombre del medicamento"
-      :items="listaNombres"
-      v-model="nombreActualizar"
-    ></v-autocomplete>
-    <v-number-input
-      class="w-50"
-      control-variant="stacked"
-      label="Existencias"
-      :max="1000000"
-      :min="1"
-      v-model="existencias.value.value"
-    ></v-number-input>
-    <v-btn
-    class="bg-blue font-weight-bold"
-    @click="agregarExistencias"
-    >
-      Actualizar
-    </v-btn>
-  </div>
+      <div class="w-md-50 mt-lg-16">
+        <h2 class="text-center mb-2">Actualizar existencias</h2>
+        <v-autocomplete
+          class=""
+          label="Nombre del medicamento"
+          :items="listaNombres"
+          v-model="nombreActualizar"
+        ></v-autocomplete>
+        <v-number-input
+          class="w-50"
+          control-variant="stacked"
+          label="Existencias"
+          :max="1000000"
+          :min="1"
+          v-model="existencias.value.value"
+        ></v-number-input>
+        <v-btn
+          class="bg-blue font-weight-bold"
+          @click="aumentarExistencias"
+        >
+          Aumentar
+        </v-btn>
+        <v-btn
+          class="bg-blue font-weight-bold ml-10"
+          @click="decrementarExistencias"
+        >
+          Decrementar
+        </v-btn>
+      </div>
+    </v-col>
+    <v-col class="mr-16">
+      <div>
+        <h2>Busqueda por categoria</h2>
+        <v-autocomplete
+          class="w-50"
+          label="Categoria"
+          :items="listaCategorias"
+          v-model="buscarMedCategoria"
+        ></v-autocomplete>
+        <v-btn
+          class="bg-blue font-weight-bold"
+          @click="buscarPorCategoria"
+        >
+          Buscar
+        </v-btn>
+        <v-data-table
+          class="mr-15"
+          :items="medicamentosPorCategoria"
+        ></v-data-table>
+      </div>
+    </v-col>
+
+
+
+
+  </v-row>
+
 
 
 </template>
