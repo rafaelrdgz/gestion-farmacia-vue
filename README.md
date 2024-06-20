@@ -1,35 +1,8 @@
-# gestion-farmacia-vue
+# Tarea Extraclase de Javascript
 
-This template should help get you started developing with Vue 3 in Vite.
+Tema 21: Gestión de Inventarios de Farmacia
 
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-pnpm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-pnpm dev
-```
-
-### Compile and Minify for Production
-
-```sh
-pnpm build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-pnpm lint
-```
+* Aplicacion desarrollada en VueJS usando la librería de componentes Vuetify.
+* Se utiliza la herramienta de compilación Vite para proporcionar una experiencia de desarrollo más rapida.
+* Uso de la biblioteca VeeValidate para el seguimiento de valores, validación de errores y envío de fomularios.
+* Se utilizan las herramientas Prettier y ESLint para identificar errores en el código y formatear los archivos al guardar.
