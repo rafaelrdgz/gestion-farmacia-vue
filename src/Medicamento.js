@@ -6,10 +6,10 @@ export default class Medicamento extends ArticuloBase {
     this.precio = precio
     this.cantidad = cantidad
   }
-  aumentarCantidad(cant){
+  aumentarCantidad(cant) {
     this.cantidad += cant
   }
-  decrementarCantidad(cant){
-    this.cantidad -= cant
+  decrementarCantidad(cant) {
+    cant <= this.cantidad ? (this.cantidad -= cant) : alert('No hay suficiente cantidad')
   }
 }

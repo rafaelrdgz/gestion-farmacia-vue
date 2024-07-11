@@ -12,6 +12,7 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@mdi/font": "^7.4.47",
     "vee-validate": "^4.13.1",
     "vue": "^3.4.21",
     "vuetify": "^3.6.9"
