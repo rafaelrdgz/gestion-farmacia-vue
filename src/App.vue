@@ -37,7 +37,7 @@ const submit = handleSubmit((values) => {
     ? alert('Ya existe ese medicamento')
     : medicamentos.set(
         values.nombre,
-        new Medicamento(values.nombre, values.categoria, values.cantidad, values.precio)
+        new Medicamento(values.nombre, values.categoria, values.precio, values.cantidad)
       )
   listaNombres.value.push(values.nombre.toString())
   if (!buscarCategoria(values.categoria)) listaCategorias.value.push(values.categoria)
