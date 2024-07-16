@@ -20,6 +20,7 @@ const { handleSubmit, handleReset } = useForm({
     }
   }
 })
+
 const nombre = useField('nombre')
 const categoria = useField('categoria')
 const cantidad = useField('cantidad')
@@ -32,19 +33,32 @@ const buscarMedCategoria = ref('buscarMedCategoria')
 const listaCategorias = ref([])
 buscarMedCategoria.value = null
 
-const submit = handleSubmit((values) => {
-  medicamentos.has(values.nombre)
-    ? alert('Ya existe ese medicamento')
-    : medicamentos.set(
-        values.nombre,
-        new Medicamento(values.nombre, values.categoria, values.precio, values.cantidad)
-      )
-  listaNombres.value.push(values.nombre.toString())
-  if (!buscarCategoria(values.categoria)) listaCategorias.value.push(values.categoria)
-  console.log(medicamentos)
-  console.log(listaNombres.value)
-  console.log(listaCategorias.value)
+const submit = handleSubmit(async (values) => {
+  try {
+    await crearMedicamento(values)
+    listaNombres.value.push(values.nombre.toString())
+    alert('Medicamento creado con éxito')
+    if (!buscarCategoria(values.categoria)) listaCategorias.value.push(values.categoria)
+  } catch (error) {
+    alert(error.message)
+  }
 })
+
+async function crearMedicamento(values) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (medicamentos.has(values.nombre)) {
+        reject(new Error('Ya existe ese medicamento'))
+      } else {
+        medicamentos.set(
+          values.nombre,
+          new Medicamento(values.nombre, values.categoria, values.precio, values.cantidad)
+        )
+        resolve()
+      }
+    }, 1000)
+  })
+}
 
 function buscarCategoria(cat) {
   for (let c of listaCategorias.value) {
@@ -62,6 +76,7 @@ const aumentarExistencias = () => {
     nombreActualizar.value = ' '
   }
 }
+
 const decrementarExistencias = () => {
   if (!medicamentos.has(nombreActualizar.value)) {
     alert('No existe ese medicamento')
